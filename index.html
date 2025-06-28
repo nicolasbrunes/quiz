@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show do Milhão - FMP</title>
+    <style>
+        :root {
+            --fmp-primary: #005baa;      
+            --fmp-secondary: #f8b619;     
+            --fmp-dark: #003366;         
+            --fmp-light: #e6f2ff;         
+            --fmp-white: #ffffff;
+            --fmp-light-gray: #f5f7fa;
+            --fmp-dark-text: #2c3e50;
+            --fmp-correct: #4CAF50;       
+            --fmp-wrong: #F44336;        
+            --fmp-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --fmp-border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            background-color: var(--fmp-light-gray);
+            color: var(--fmp-dark-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 91, 170, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(248, 182, 25, 0.05) 0%, transparent 20%);
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container {
+            position: relative;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .logo {
+            max-width: 300px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        h1 {
+            color: var(--fmp-primary);
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--fmp-secondary);
+            border-radius: 2px;
+        }
+
+        
+        .start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, var(--fmp-primary) 0%, var(--fmp-dark) 100%);
+            color: var(--fmp-white);
+            border-radius: var(--fmp-border-radius);
+            padding: 40px;
+            margin-top: 20px;
+            box-shadow: var(--fmp-shadow);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .start-screen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(248, 182, 25, 0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+
+        .start-screen p {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+
+      
+        .game-screen, .end-screen {
+            display: none;
+            background: linear-gradient(135deg, #f8faff 0%, #f0f7ff 100%);
+            border-radius: var(--fmp-border-radius);
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: var(--fmp-shadow);
+            width: 100%;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+            border: 1px solid rgba(0, 91, 170, 0.15);
+        }
+
+        .game-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--fmp-primary), var(--fmp-secondary), var(--fmp-primary));
+        }
+
+        
+        .prize-display {
+            font-size: 1.6rem;
+            color: var(--fmp-white);
+            margin-bottom: 30px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--fmp-primary) 0%, var(--fmp-dark) 100%);
+            padding: 15px;
+            border-radius: var(--fmp-border-radius);
+            border-left: 5px solid var(--fmp-secondary);
+            box-shadow: 0 5px 15px rgba(0, 91, 170, 0.2);
+            position: relative;
+        }
+
+        .prize-display::after {
+            content: 'R$';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--fmp-secondary);
+            font-weight: 500;
+        }
+
+        .question-container {
+            background: linear-gradient(to bottom, #ffffff 0%, #f8fbff 100%);
+            border-radius: var(--fmp-border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 12px rgba(0, 91, 170, 0.08);
+            border: 1px solid rgb(0, 136, 255);
+            position: relative;
+        }
+
+        .question-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--fmp-primary), var(--fmp-secondary));
+            border-radius: 5px 0 0 5px;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            background: var(--fmp-secondary);
+            color: var(--fmp-dark);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1.2rem;
+            border: 3px solid var(--fmp-white);
+        }
+
+        .question {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: var(--fmp-primary);
+            font-weight: 600;
+            padding: 15px;
+            text-align: center;
+        }
+
+        
+        .options-container {
+            background: linear-gradient(to bottom, #f5f9ff 0%, #e6f2ff 100%);
+            border-radius: var(--fmp-border-radius);
+            padding: 20px;
+            box-shadow: inset 0 0 15px rgba(0, 91, 170, 0.05);
+            border: 1px solid rgba(32, 0, 146, 0.568);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            background: var(--fmp-white);
+            border: 2px solid var(--fmp-light);
+            border-radius: var(--fmp-border-radius);
+            padding: 18px 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            color: var(--fmp-dark-text);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        
+        .option:nth-child(1) { 
+            background: linear-gradient(to right, #ffffff 0%, #f5fbff 100%);
+            border-color: #c2e0ff;
+        }
+
+        .option:nth-child(2) { 
+            background: linear-gradient(to right, #ffffff 0%, #f5f9ff 100%);
+            border-color: #d1e3ff;
+        }
+
+        .option:nth-child(3) {
+            background: linear-gradient(to right, #ffffff 0%, #f5f7ff 100%);
+            border-color: #e0ebff;
+        }
+
+        .option:nth-child(4) { 
+            background: linear-gradient(to right, #ffffff 0%, #f7f5ff 100%);
+            border-color: #eee9ff;
+        }
+
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 91, 170, 0.2);
+            border-color: var(--fmp-primary);
+            background: linear-gradient(to right, #e6f2ff 0%, #d9ebff 100%) !important;
+        }
+
+        .option:active {
+            transform: translateY(1px);
+        }
+
+        .option-letter {
+            font-weight: 700;
+            margin-right: 20px;
+            color: var(--fmp-primary);
+            font-size: 1.6rem;
+            min-width: 40px;
+            height: 40px;
+            background-color: var(--fmp-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover .option-letter {
+            background-color: var(--fmp-primary);
+            color: var(--fmp-white);
+            transform: scale(1.1);
+        }
+
+        .option-text {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        
+        .lifelines-container {
+            background: linear-gradient(to right, rgba(0, 91, 170, 0.03) 0%, rgba(248, 182, 25, 0.03) 100%);
+            border-radius: var(--fmp-border-radius);
+            padding: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 91, 170, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 91, 170, 0.05);
+        }
+
+        .lifelines-title {
+            color: var(--fmp-primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lifelines-title svg {
+            margin-right: 10px;
+            fill: var(--fmp-primary);
+        }
+
+        .lifelines {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lifeline {
+            background: linear-gradient(to bottom, var(--fmp-primary) 0%, var(--fmp-dark) 100%);
+            border: none;
+            color: var(--fmp-white);
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            min-width: 160px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 91, 170, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lifeline:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 91, 170, 0.3);
+        }
+
+        .lifeline:disabled {
+            background: #E0E0E0;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .lifeline-icon {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+            fill: var(--fmp-white);
+        }
+
+        
+        .feedback-container {
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback {
+            font-size: 1.4rem;
+            padding: 20px;
+            border-radius: var(--fmp-border-radius);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .correct {
+            color: var(--fmp-correct);
+            background: rgba(76, 175, 80, 0.15) !important;
+            border-left: 5px solid var(--fmp-correct);
+        }
+
+        .wrong {
+            color: var(--fmp-wrong);
+            background: rgba(244, 67, 54, 0.15) !important;
+            border-left: 5px solid var(--fmp-wrong);
+        }
+
+        
+        .prize-ladder {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            border-radius: var(--fmp-border-radius);
+            padding: 20px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 91, 170, 0.15);
+            width: 220px;
+            z-index: 100;
+            border: 1px solid rgba(0, 91, 170, 0.1);
+        }
+
+        .prize-ladder h3 {
+            color: var(--fmp-primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--fmp-secondary);
+            padding-bottom: 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prize-ladder h3 svg {
+            margin-right: 10px;
+            fill: var(--fmp-primary);
+        }
+
+        .prize-item {
+            padding: 8px 12px;
+            text-align: right;
+            font-size: 1rem;
+            color: var(--fmp-dark-text);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.7);
+            margin: 2px 0;
+            border-radius: 6px;
+        }
+
+        .prize-item::before {
+            content: '•';
+            color: var(--fmp-secondary);
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .current-prize {
+            color: var(--fmp-primary);
+            font-weight: 700;
+            background: linear-gradient(to right, rgba(0, 91, 170, 0.1) 0%, rgba(248, 182, 25, 0.1) 100%) !important;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin: 5px -12px;
+            box-shadow: 0 3px 6px rgba(0, 91, 170, 0.1);
+        }
+
+        .current-prize::before {
+            content: '→';
+            color: var(--fmp-secondary);
+            margin-right: 10px;
+        }
+
+        .achieved-prize {
+            color: var(--fmp-correct);
+            font-weight: 600;
+        }
+
+       
+        button {
+            background: linear-gradient(to right, var(--fmp-primary) 0%, var(--fmp-dark) 100%);
+            color: var(--fmp-white);
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 91, 170, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--fmp-dark) 0%, var(--fmp-primary) 100%);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 91, 170, 0.4);
+        }
+
+        button:hover::before {
+            opacity: 1;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .pulse-effect {
+            animation: pulse 0.5s ease;
+        }
+
+       
+        @media (max-width: 992px) {
+            .prize-ladder {
+                position: static;
+                transform: none;
+                margin: 30px auto;
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .start-screen, .game-screen, .end-screen {
+                padding: 30px 20px;
+            }
+            
+            .question {
+                font-size: 1.2rem;
+            }
+            
+            .option {
+                font-size: 1.1rem;
+                padding: 15px 20px;
+            }
+            
+            .lifelines {
+                gap: 10px;
+            }
+            
+            .lifeline {
+                min-width: 140px;
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+
+            .prize-display {
+                font-size: 1.4rem;
+            }
+
+            .feedback {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question {
+                font-size: 1.1rem;
+            }
+            
+            .option {
+                font-size: 1rem;
+                padding: 12px 15px;
+            }
+            
+            .lifeline {
+                min-width: 100%;
+            }
+            
+            .prize-display {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+   
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://i0.wp.com/fmpsc.edu.br/wp-content/uploads/2024/09/Marca-FMP-3-1024x379.png?resize=512%2C190" alt="Logo FMP" class="logo">
+        </div>
+        
+        <h1>Show do Milhão - FMP</h1>
+        
+        <div class="start-screen fade-in">
+            <p>Teste seus conhecimentos sobre a Faculdade Municipal da Palhoça!</p>
+            <p>Responda 25 perguntas e tente ganhar 1 milhão de reais!</p>
+            <button id="start-btn">Começar Jogo</button>
+        </div>
+        
+        <div class="game-screen">
+            <div class="prize-display">Prêmio atual: R$ 0</div>
+            
+            <div class="lifelines-container">
+                <div class="lifelines-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="lifeline-icon">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
+                    </svg>
+                    Ajudas Disponíveis
+                </div>
+                <div class="lifelines">
+                    <button class="lifeline" id="fifty-fifty">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" class="lifeline-icon">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                        50:50
+                    </button>
+                    <button class="lifeline" id="skip-question">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" class="lifeline-icon">
+                            <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/>
+                        </svg>
+                        Pular
+                    </button>
+                    <button class="lifeline" id="eliminate-two">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" class="lifeline-icon">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Eliminar 2
+                    </button>
+                    <button class="lifeline" id="ask-public">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" class="lifeline-icon">
+                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                        </svg>
+                        Público
+                    </button>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-number">1</div>
+                <div class="question" id="question-text">Pergunta carregando...</div>
+            </div>
+            
+            <div class="options-container">
+                <div class="options" id="options-container">
+                </div>
+            </div>
+            
+            <div class="feedback-container">
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+        
+        <div class="end-screen">
+            <h2 id="end-message">Fim de Jogo!</h2>
+            <p id="end-prize">Você ganhou: R$ 0</p>
+            <button id="restart-btn">Jogar Novamente</button>
+        </div>
+        
+        <div class="prize-ladder" id="prize-ladder">
+            <h3>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
+                </svg>
+                Escada de Prêmios
+            </h3>
+            <div class="prize-item" data-value="1000000">1.000.000</div>
+            <div class="prize-item" data-value="500000">500.000</div>
+            <div class="prize-item" data-value="250000">250.000</div>
+            <div class="prize-item" data-value="100000">100.000</div>
+            <div class="prize-item" data-value="50000">50.000</div>
+            <div class="prize-item" data-value="25000">25.000</div>
+            <div class="prize-item" data-value="10000">10.000</div>
+            <div class="prize-item" data-value="5000">5.000</div>
+            <div class="prize-item" data-value="2000">2.000</div>
+            <div class="prize-item" data-value="1000">1.000</div>
+        </div>
+    </div>
+
+    
+    <audio id="correct-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
+    <audio id="wrong-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+    <audio id="transition-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-suspense-waiting-668.mp3" preload="auto"></audio>
+    <audio id="help-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+    <audio id="applause-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-audience-clapping-strongly-476.mp3" preload="auto"></audio>
+    <script>
+       const questions = [
+  {
+    question: "Em que ano a FMP foi fundada?",
+    options: ["2005", "2006", "2008", "2010"],
+    answer: "2005"
+  },
+  {
+    question: "Em que data foi inaugurada a FMP?",
+    options: ["20 de abril de 2006", "25 de outubro de 2005", "1 de março de 2006", "15 de maio de 2006"],
+    answer: "20 de abril de 2006"
+  },
+  {
+    question: "Qual lei municipal criou a FMP?",
+    options: ["Lei nº 2.182", "Lei nº 2.200", "Lei nº 2.100", "Lei nº 2.250"],
+    answer: "Lei nº 2.182"
+  },
+  {
+    question: "Quantos cursos de graduação a FMP oferece?",
+    options: ["5", "4", "6", "3"],
+    answer: "5"
+  },
+  {
+    question: "Onde é o campus da FMP?",
+    options: ["Ponte do Imaruim", "Centro", "Aririú", "COHAB"],
+    answer: "Ponte do Imaruim"
+  },
+  {
+    question: "Qual o endereço da sede da FMP?",
+    options: ["Rua João Pereira dos Santos, 99", "Rua do Estudante, 100", "Av. Brasil, 99", "Rua das Flores, 200"],
+    answer: "Rua João Pereira dos Santos, 99"
+  },
+  {
+    question: "Quantos turnos há no curso de Administração?",
+    options: ["Matutino e noturno", "Matutino apenas", "Vespertino apenas", "Noturno apenas"],
+    answer: "Matutino e noturno"
+  },
+  {
+    question: "Qual a duração do curso de ADS?",
+    options: ["2,5 anos", "2 anos", "3 anos", "4 anos"],
+    answer: "2,5 anos"
+  },
+  {
+    question: "Quem coordena o curso de ADS?",
+    options: ["Simone Regina da Silva", "Débora Raquel Schutz", "Ronério Heiderscheidt", "Sara J. Correa"],
+    answer: "Simone Regina da Silva"
+  },
+  {
+    question: "Quais os cursos de pós-graduação ativos em 2024?",
+    options: ["Gestão Escolar e Gestão Empresarial", "Pedagogia e Administração", "ADS e Turismo", "Gerenciais e ADS"],
+    answer: "Gestão Escolar e Gestão Empresarial"
+  },
+  {
+    question: "Qual órgão mantém a FMP?",
+    options: ["Prefeitura Municipal de Palhoça", "Governo do Estado", "União", "Secretaria de Educação Estadual"],
+    answer: "Prefeitura Municipal de Palhoça"
+  },
+  {
+    question: "Qual percentual de vagas é reservado para alunos da escola pública municipal?",
+    options: ["90%", "100%", "50%", "75%"],
+    answer: "90%"
+  },
+  {
+    question: "Em que ano começou o Programa da Maturidade?",
+    options: ["2007", "2005", "2010", "2006"],
+    answer: "2007"
+  },
+  {
+    question: "Quantas pessoas o Programa da Maturidade atende?",
+    options: ["Cerca de 80", "Cerca de 50", "Cerca de 100", "Cerca de 30"],
+    answer: "Cerca de 80"
+  },
+  {
+    question: "Qual o sobrenome do Leandro?",
+    options: ["Pickles", "Pickler", "Picles", "Pikcler"],
+    answer: "Pickler"
+  },
+  {
+    question: "Qual curso tem duração de 4 anos?",
+    options: ["Administração e Pedagogia", "ADS e Turismo", "Processos Gerenciais", "PEDAGOGIA apenas"],
+    answer: "Administração e Pedagogia"
+  },
+  {
+    question: "Qual modalidade de ensino da FMP?",
+    options: ["Presencial", "EaD", "Mista", "Semi‑presencial"],
+    answer: "Presencial"
+  },
+  {
+    question: "Qual campus possui a Secretaria Acadêmica?",
+    options: ["Ponte do Imaruim", "Centro", "Aririú", "COHAB"],
+    answer: "Ponte do Imaruim"
+  },
+  {
+    question: "Qual a duração do Tecnólogo em Processos Gerenciais?",
+    options: ["2 anos", "2,5 anos", "4 anos", "3 anos"],
+    answer: "2 anos"
+  },
+  {
+    question: "Qual curso está indisponivel no momento?",
+    options: ["Gestão de turismo", "ADS", "Processos gerenciais", "Pedagogia"],
+    answer: "Gestão de turismo"
+  },
+  {
+    question: "Em que ano foi implantado o Decreto nº 188/2005?",
+    options: ["2005", "2006", "2010", "2013"],
+    answer: "2005"
+  },
+  {
+    question: "Qual Lei Estadual fundamentou a criação da FMP?",
+    options: ["Lei Complementar 170/98", "Lei nº 10.861", "Lei nº 9.394/96", "Decreto 5773/2006"],
+    answer: "Lei Complementar 170/98"
+  },
+  {
+    question: "Qual programa de ensino oferta disciplinas a idosos?",
+    options: ["Programa da Maturidade", "PIBID", "Gestão Escolar", "Gestão Empresarial"],
+    answer: "Programa da Maturidade"
+  },
+  {
+    question: "Qual é a duração da pós em gestão escolar?",
+    options: ["1 ano (360 h)", "2 anos", "6 meses", "18 meses"],
+    answer: "1 ano (360 h)"
+  },
+  {
+    question: "Quem foi o prefeito durante a criação?",
+    options: ["Ronério Heiderscheidt", "Simone Silva", "Débora Schutz", "Sara Correa"],
+    answer: "Ronério Heiderscheidt"
+  },
+  {
+    question: "Quantos anos dura o bacharelado em Pedagogia?",
+    options: ["4 anos", "3 anos", "2,5 anos", "2 anos"],
+    answer: "4 anos"
+  },
+  {
+    question: "Qual curso está indisponível?",
+    options: ["Gestão de Turismo", "ADS", "Administração", "Pedagogia"],
+    answer: "Gestão de Turismo"
+  },
+  {
+    question: "Qual porcentagem de vagas é para não‑municipais?",
+    options: ["10%", "90%", "25%", "50%"],
+    answer: "10%"
+  },
+  {
+    question: "Quantos cursos de graduação tecnologia oferece a FMP?",
+    options: ["2", "3", "4", "1"],
+    answer: "1"
+  },
+  {
+    question: "Quais são os cursos tecnologicos?",
+    options: ["ADS e Processos Gerenciais", "Turismo e ADS", "Administração e ADS", "Pedagogia e ADS"],
+    answer: "ADS e Processos Gerenciais"
+  },
+  {
+    question: "Qual curso de licenciatura é oferecido?",
+    options: ["Pedagogia", "ADS", "Administração", "Turismo"],
+    answer: "Pedagogia"
+  },
+  {
+    question: "Qual curso tem turno matutino apenas?",
+    options: ["Processos Gerenciais e ADS", "Administração", "Pedagogia", "ADS"],
+    answer: "Processos Gerenciais e ADS"
+  },
+  {
+    question: "Quantos cursos gratuitos no vestibular 2025/01?",
+    options: ["4", "5", "3", "2"],
+    answer: "4"
+  },
+  {
+    question: "Qual é o site oficial da FMP?",
+    options: ["fmpsc.edu.br", "fsmpsc.edu.br", "fmp.edu.br", "fmpc.edu.br"],
+    answer: "fmpsc.edu.br"
+  },
+  {
+    question: "Qual curso tem duração de 2,5 anos?",
+    options: ["ADS", "Turismo", "Administração", "Pedagogia"],
+    answer: "ADS"
+  },
+  {
+    question: "Quantas vagas restam para não‑munícipais?",
+    options: ["10%", "90%", "5%", "20%"],
+    answer: "10%"
+  },                                                                                                                
+  {
+    question: "Qual é a profissão formada por Pedagogia?",
+    options: ["Pedagogo", "Administrador", "Desenvolvedor", "Turismólogo"],
+    answer: "Pedagogo"
+  },
+  {
+    question: "Qual curso possui coordenação sob Simone Silva?",
+    options: ["ADS", "Administração", "Pedagogia", "Turismo"],
+    answer: "ADS"
+  },
+  {
+    question: "O Programa da Maturidade é voltado para quem?",
+    options: ["Pessoas a partir de 50 anos", "Estudantes", "Professores", "Funcionários"],
+    answer: "Pessoas a partir de 50 anos"
+  },
+  {
+    question: "Quantos anos leva o tecnólogo em ADS?",
+    options: ["2,5", "2", "3", "4"],
+    answer: "2,5"
+  },
+  {
+    question: "Em que bairro está a FMP?",
+    options: ["Ponte do Imaruim", "Centro", "Aririú", "COHAB"],
+    answer: "Ponte do Imaruim"
+  }
+];
+
+        
+        let currentQuestionIndex = 0;
+        let selectedQuestions = [];
+        let prize = 0;
+        let lifelines = {
+            fiftyFifty: { used: false, element: null },
+            skipQuestion: { used: false, element: null },
+            eliminateTwo: { used: false, element: null },
+            askPublic: { used: false, element: null }
+        };
+        const prizeLadder = [1000, 2000, 5000, 10000, 20000, 50000, 100000, 250000, 500000, 1000000];
+        const prizesPerQuestion = calculatePrizes();
+
+        
+        const startScreen = document.querySelector('.start-screen');
+        const gameScreen = document.querySelector('.game-screen');
+        const endScreen = document.querySelector('.end-screen');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedback = document.getElementById('feedback');
+        const prizeDisplay = document.querySelector('.prize-display');
+        const endMessage = document.getElementById('end-message');
+        const endPrize = document.getElementById('end-prize');
+        const prizeLadderElement = document.getElementById('prize-ladder');
+        
+        
+        const correctSound = document.getElementById('correct-sound');
+        const wrongSound = document.getElementById('wrong-sound');
+        const transitionSound = document.getElementById('transition-sound');
+        const helpSound = document.getElementById('help-sound');
+        const applauseSound = document.getElementById('applause-sound');
+
+        
+        document.addEventListener('DOMContentLoaded', () => {
+           
+            lifelines.fiftyFifty.element = document.getElementById('fifty-fifty');
+            lifelines.skipQuestion.element = document.getElementById('skip-question');
+            lifelines.eliminateTwo.element = document.getElementById('eliminate-two');
+            lifelines.askPublic.element = document.getElementById('ask-public');
+            
+            
+            startBtn.addEventListener('click', startGame);
+            restartBtn.addEventListener('click', startGame);
+            
+           
+            lifelines.fiftyFifty.element.addEventListener('click', () => useLifeline('fiftyFifty'));
+            lifelines.skipQuestion.element.addEventListener('click', () => useLifeline('skipQuestion'));
+            lifelines.eliminateTwo.element.addEventListener('click', () => useLifeline('eliminateTwo'));
+            lifelines.askPublic.element.addEventListener('click', () => useLifeline('askPublic'));
+        });
+
+       
+        function calculatePrizes() {
+            const totalQuestions = 25;
+            const prizes = [];
+            
+            for (let i = 0; i < totalQuestions; i++) {
+                const progress = i / (totalQuestions - 1);
+                const prizeIndex = Math.floor(progress * (prizeLadder.length - 1));
+                prizes.push(prizeLadder[prizeIndex]);
+            }
+            
+            return prizes;
+        }
+
+        
+        function startGame() {
+            
+            currentQuestionIndex = 0;
+            prize = 0;
+            
+            
+            for (const lifeline in lifelines) {
+                lifelines[lifeline].used = false;
+                lifelines[lifeline].element.disabled = false;
+            }
+            
+            
+            selectedQuestions = [...questions]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 25);
+            
+            
+            selectedQuestions = selectedQuestions.map(q => {
+                const options = [...q.options];
+                
+                for (let i = options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [options[i], options[j]] = [options[j], options[i]];
+                }
+                return {...q, options};
+            });
+            
+           
+            startScreen.style.display = 'none';
+            endScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            prizeLadderElement.style.display = 'block';
+            
+            
+            showQuestion();
+        }
+
+        
+        function showQuestion() {
+            
+            updatePrizeLadder();
+            
+            const currentQuestion = selectedQuestions[currentQuestionIndex];
+            questionText.textContent = currentQuestion.question;
+            prizeDisplay.textContent = `Prêmio atual: R$ ${prizesPerQuestion[currentQuestionIndex].toLocaleString()}`;
+            
+            
+            feedback.textContent = '';
+            feedback.className = 'feedback';
+            
+           
+            optionsContainer.innerHTML = '';
+            
+           
+            const letters = ['A', 'B', 'C', 'D'];
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.innerHTML = `
+                    <span class="option-letter">${letters[index]}</span>
+                    <span class="option-text">${option}</span>
+                `;
+                
+                optionElement.addEventListener('click', () => checkAnswer(option));
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        
+        function checkAnswer(selectedOption) {
+            const currentQuestion = selectedQuestions[currentQuestionIndex];
+            const isCorrect = selectedOption === currentQuestion.answer;
+            
+            if (isCorrect) {
+                
+                feedback.textContent = 'Resposta correta!';
+                feedback.className = 'feedback correct';
+                correctSound.play();
+                
+                
+                prize = prizesPerQuestion[currentQuestionIndex];
+                
+               
+                currentQuestionIndex++;
+                
+                if (currentQuestionIndex < selectedQuestions.length) {
+                    setTimeout(() => {
+                        transitionSound.play();
+                        showQuestion();
+                    }, 1500);
+                } else {
+                    applauseSound.play();
+                    endGame(true);
+                }
+            } else {
+               
+                feedback.textContent = `Resposta incorreta! A resposta correta era: ${currentQuestion.answer}`;
+                feedback.className = 'feedback wrong';
+                wrongSound.play();
+                endGame(false);
+            }
+        }
+
+        function useLifeline(lifelineType) {
+            if (lifelines[lifelineType].used) return;
+            
+            helpSound.play();
+            lifelines[lifelineType].used = true;
+            lifelines[lifelineType].element.disabled = true;
+            
+            const currentQuestion = selectedQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            const correctIndex = currentQuestion.options.indexOf(currentQuestion.answer);
+            
+            switch(lifelineType) {
+                case 'fiftyFifty':
+                    
+                    let wrongOptions = [];
+                    
+                    currentQuestion.options.forEach((option, index) => {
+                        if (option !== currentQuestion.answer) {
+                            wrongOptions.push(index);
+                        }
+                    });
+                    
+                    
+                    wrongOptions = wrongOptions.sort(() => Math.random() - 0.5);
+                    
+                   
+                    for (let i = 0; i < 2; i++) {
+                        const wrongIndex = wrongOptions[i];
+                        options[wrongIndex].style.opacity = '0.3';
+                        options[wrongIndex].style.pointerEvents = 'none';
+                    }
+                    break;
+                    
+                case 'skipQuestion':
+                    
+                    feedback.textContent = 'Você pulou esta pergunta!';
+                    feedback.className = 'feedback';
+                    
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < selectedQuestions.length) {
+                        setTimeout(() => {
+                            transitionSound.play();
+                            showQuestion();
+                        }, 1500);
+                    } else {
+                        endGame(true);
+                    }
+                    break;
+                    
+                case 'eliminateTwo':
+                    
+                    let allOptions = [0, 1, 2, 3];
+                    allOptions.splice(correctIndex, 1); 
+                    
+                    
+                    if (Math.random() > 0.5) {
+                        allOptions.push(correctIndex);
+                    }
+                    
+                    
+                    allOptions = allOptions.sort(() => Math.random() - 0.5);
+                    
+                    
+                    for (let i = 0; i < 2; i++) {
+                        const indexToEliminate = allOptions[i];
+                        options[indexToEliminate].style.opacity = '0.3';
+                        options[indexToEliminate].style.pointerEvents = 'none';
+                    }
+                    break;
+                    
+                case 'askPublic':
+                    
+                    const percentages = [0, 0, 0, 0];
+                    let remainingPercent = 100;
+                    
+                    
+                    percentages[correctIndex] = 40 + Math.floor(Math.random() * 30);
+                    remainingPercent -= percentages[correctIndex];
+                    
+                    
+                    const otherOptions = [0, 1, 2, 3].filter(i => i !== correctIndex);
+                    
+                    for (let i = 0; i < otherOptions.length; i++) {
+                        if (i === otherOptions.length - 1) {
+                            percentages[otherOptions[i]] = remainingPercent;
+                        } else {
+                            const percent = Math.floor(Math.random() * remainingPercent * 0.7);
+                            percentages[otherOptions[i]] = percent;
+                            remainingPercent -= percent;
+                        }
+                    }
+                    
+                   
+                    if (Math.random() > 0.5) {
+                        const temp = percentages[correctIndex];
+                        percentages[correctIndex] = Math.max(...percentages.filter((_, i) => i !== correctIndex));
+                        const maxIndex = percentages.indexOf(percentages[correctIndex]);
+                        percentages[maxIndex] = temp;
+                    }
+                    
+                   
+                    options.forEach((option, index) => {
+                        const optionText = option.querySelector('.option-text');
+                        optionText.textContent = `${currentQuestion.options[index]} (${percentages[index]}%)`;
+                    });
+                    
+                   
+                    optionsContainer.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        optionsContainer.style.pointerEvents = 'auto';
+                    }, 3000);
+                    break;
+            }
+        }
+
+       
+        function endGame(win) {
+            gameScreen.style.display = 'none';
+            endScreen.style.display = 'block';
+            prizeLadderElement.style.display = 'none';
+            
+            if (win) {
+                endMessage.textContent = 'Parabéns! Você ganhou o Show do Milhão!';
+                endPrize.textContent = `Você ganhou: R$ ${prize.toLocaleString()}`;
+            } else {
+                endMessage.textContent = 'Fim de Jogo!';
+                endPrize.textContent = `Você ganhou: R$ ${prize.toLocaleString()}`;
+            }
+        }
+
+        
+        function updatePrizeLadder() {
+            const prizeItems = document.querySelectorAll('.prize-item');
+            const currentPrizeValue = prizesPerQuestion[currentQuestionIndex];
+            
+            prizeItems.forEach(item => {
+                const itemValue = parseInt(item.getAttribute('data-value'));
+                item.classList.remove('current-prize', 'achieved-prize');
+                
+                if (itemValue === currentPrizeValue) {
+                    item.classList.add('current-prize');
+                } else if (prizeLadder.indexOf(itemValue) < prizeLadder.indexOf(currentPrizeValue)) {
+                    item.classList.add('achieved-prize');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
